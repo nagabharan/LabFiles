@@ -1,0 +1,20 @@
+DB Q3
+
+STUDENT (regno: string, name: string, major: string, bdate:date)
+COURSE (course #:int, cname:string, dept:string)
+ENROLL ( regno:string, course#:int, sem:int, marks:int)
+BOOK _ ADOPTION (course# :int, sem:int, book-ISBN:int)
+TEXT (book-ISBN:int, book-title:string, publisher:string,author:string)
+
+iii. Demonstrate how you add a new text book to the database and make this book be adopted by some department.
+
+insert into text values(678,'new book','pesse','naga');
+insert into adpot values(2,2,678);
+
+iv. Produce a list of text books (include Course #, Book-ISBN, Book-title) in the alphabetical order for courses offered by the ‘CS’ department that use more than two books.
+
+select b.courseno, b.book_ISBN, t.title from text t, adopt b, course c where b.courseno = c.courseno and b.book_ISBN=t.book_ISBN and c.dept='cs'and exists(select count(b1.courseno) from adopt b1 where b1.courseno = c.courseno group by b1.courseno having count(*)>=2) order by c.courseno, b.book_ISBN, t.title;
+
+v. List any department that has all its adopted books published by a specific publisher.
+
+select distinct c.dept from course c,adopt b,text t where c.courseno=b.courseno and b.book_ISBN=t.book_ISBN and t.publisher='wiley' and t.publisher=all(select t1.publisher from course c1,text t1,adopt b1 where c1.courseno=b1.courseno and b1.book_ISBN=t1.book_ISBN and c.dept=c1.dept);

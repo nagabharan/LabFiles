@@ -1,0 +1,30 @@
+DB Q2
+
+Flights (no: integer, from: string, to: string, distance: integer,Departs: time, arrives: time, price: real)
+Aircraft (aid: integer, aname: string, cruisingrange: integer)
+Certified (eid: integer, aid: integer)
+Employees (eid: integer, ename: string, salary: integer)
+
+i. Find the names of aircraft such that all pilots certified to operate them have salaries more than Rs.80, 000.
+
+select a.aname from aircraft a where not exists(select c.aid from certified c where a.aid=aid and not exists(select * from employee where c.eid=eid and salary>80000));
+
+ii. For each pilot who is certified for more than three aircrafts,find the eid and the maximum cruisingrange of the aircraft for which she or he is certified.
+
+select eid,max(cruisingrange) from certified c,aircraft a where a.aid=c.aid group by c.eid having count(*)>3;
+
+iii. Find the names of pilots whose salary is less than the price of the cheapest route from Bengaluru to Frankfurt.
+
+select e.ename from employee e,certified c where c.eid=e.eid and e.salary < (select min(price) from flights where from1='Bangalore' and to1='Frankfurt');
+
+iv. For all aircraft with cruisingrange over 1000 Kms, find the name of the aircraft and the average salary of all pilots certified for this aircraft.
+
+select ename,aname,avg(salary) from employee e, certified c,aircraft a where e.eid=c.eid and a.aid=c.aid and a.cruisingrange>1000 group by aname;
+
+v. Find the names of pilots certified for some Boeing aircraft.
+
+select distinct ename from employee e,certified c,aircraft a where e.eid=c.eid and a.aname like '%Boeing%';
+
+vi. Find the aids of all aircraft that can be used on routes from Bengaluru to New Delhi.
+
+select aid from aircraft where cruisingrange>= (select min(distance)from flights where from1='Bangalore' and to1='New Delhi');

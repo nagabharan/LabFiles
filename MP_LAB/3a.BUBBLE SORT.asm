@@ -1,0 +1,22 @@
+.MODEL SMALL
+.DATA
+A DW 20h,70h,40h,10h,50h
+CNT EQU 5
+.CODE
+START: MOV AX,@DATA
+      MOV DS,AX
+      MOV DX,CNT-1
+AGAIN0:MOV CX,DX
+       LEA SI,A
+AGAIN1:MOV AX,[SI]
+        CMP AX,[SI+2]
+        JL PR1
+        XCHG [SI+2],AX
+        XCHG [SI],AX
+PR1:ADD SI,02
+        LOOP AGAIN1
+        DEC DX
+        JNZ AGAIN0
+        MOV AH,4CH
+        INT 21H
+        END START
